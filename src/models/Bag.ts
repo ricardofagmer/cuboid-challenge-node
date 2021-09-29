@@ -24,6 +24,37 @@ export class Bag extends Base {
       },
     };
   }
+
+  $afterFind(): void {
+    this.setPayloadVolume();
+    this.setAvailableVolume();
+  }
+
+  private setPayloadVolume() {
+    this.payloadVolume = 0;
+
+    if (this.cuboids?.length) {
+      this.cuboids.forEach((el) => {
+        this.payloadVolume += el.width * el.height * el.depth;
+      });
+    }
+  }
+
+  private setAvailableVolume() {
+    this.availableVolume = 0;
+
+    if (this.cuboids?.length) {
+      let usedVolume = 0;
+
+      this.cuboids.forEach((c) => {
+        usedVolume += c.width * c.height * c.depth;
+      });
+
+      this.availableVolume = this.volume - usedVolume;
+    } else {
+      this.availableVolume = this.volume;
+    }
+  }
 }
 
 export default Bag;

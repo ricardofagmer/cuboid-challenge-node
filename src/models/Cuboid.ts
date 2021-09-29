@@ -25,6 +25,10 @@ export class Cuboid extends Base {
       },
     };
   }
+
+  $afterInsert(): void {
+    this.volume = this.width * this.height * this.depth;
+  }
 }
 
 export default Cuboid;

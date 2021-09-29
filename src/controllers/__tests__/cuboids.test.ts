@@ -196,10 +196,12 @@ describe('cuboid update', () => {
     );
   });
 
-  it('should succeed to update the cuboid', () => {
+  it('should succeed to update the cuboid', async () => {
     const [newWidth, newHeight, newDepth] = [5, 5, 5];
-    const response = { body: {} as Cuboid, status: HttpStatus.OK };
-    cuboid = response.body;
+
+    const response = await request(server)
+      .put('/cuboids/' + cuboid.id)
+      .send({ ...cuboid, width: newWidth, height: newHeight, depth: newDepth });
 
     expect(response.status).toBe(HttpStatus.OK);
     expect(cuboid.width).toBe(newWidth);
@@ -208,12 +210,12 @@ describe('cuboid update', () => {
     expect(cuboid.bag?.id).toBe(bag.id);
   });
 
-  it('should fail to update if insufficient capacity and return 422 status code', () => {
+  it('should fail to update if insufficient capacity and return 422 status code', async () => {
     const [newWidth, newHeight, newDepth] = [6, 6, 6];
-    const response = {
-      body: {} as Cuboid,
-      status: HttpStatus.UNPROCESSABLE_ENTITY,
-    };
+
+    const response = await request(server)
+      .put('/cuboids/' + cuboid.id)
+      .send({ ...cuboid, width: newWidth, height: newHeight, depth: newDepth });
 
     expect(response.status).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
     expect(response.body.width).not.toBe(newWidth);
