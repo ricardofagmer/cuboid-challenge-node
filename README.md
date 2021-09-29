@@ -1,5 +1,4 @@
 <img src="https://raw.githubusercontent.com/fullstacklabs/toy-blocks/master/FSL-logo-portrait.png" alt="FullStack Labs" align="center" />
-
 <br />
 
 # Cuboids
