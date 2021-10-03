@@ -204,10 +204,10 @@ describe('cuboid update', () => {
       .send({ ...cuboid, width: newWidth, height: newHeight, depth: newDepth });
 
     expect(response.status).toBe(HttpStatus.OK);
-    expect(cuboid.width).toBe(newWidth);
-    expect(cuboid.height).toBe(newHeight);
-    expect(cuboid.depth).toBe(newDepth);
-    expect(cuboid.bag?.id).toBe(bag.id);
+    expect(response.body.width).toBe(newWidth);
+    expect(response.body.height).toBe(newHeight);
+    expect(response.body.depth).toBe(newDepth);
+    expect(response.body.bag?.id).toBe(bag.id);
   });
 
   it('should fail to update if insufficient capacity and return 422 status code', async () => {
@@ -223,6 +223,8 @@ describe('cuboid update', () => {
     expect(response.body.depth).not.toBe(newDepth);
   });
 });
+
+
 
 describe('cuboid delete', () => {
   let bag: Bag;
@@ -247,14 +249,16 @@ describe('cuboid delete', () => {
 
   it('should delete the cuboid', async () => {
     const response = await request(server)
-      .delete('/cuboids' + cuboid.id)
+      .delete('/cuboids/' + cuboid.id)
       .send();
 
     expect(response.status).toBe(HttpStatus.NO_CONTENT);
   });
 
-  it('should not delete and return 404 status code when cuboids doesnt exists', () => {
-    const response = { status: HttpStatus.NOT_FOUND };
+  it('should not delete and return 404 status code when cuboids doesnt exists', async () => {
+    const response = await request(server)
+      .delete('/cuboids/' + cuboid.id)
+      .send();
 
     expect(response.status).toBe(HttpStatus.NOT_FOUND);
   });

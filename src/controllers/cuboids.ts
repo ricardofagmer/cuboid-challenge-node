@@ -43,7 +43,7 @@ export const create = async (
     bagVolume += el.width * el.height * el.depth;
   });
 
-  bagVolume = cuboidVolume;
+  bagVolume += cuboidVolume;
 
   if (bagVolume > bagCapacity) {
     return res
@@ -67,8 +67,8 @@ export const update = async (
 ): Promise<Response> => {
   const { id } = req.params;
   const { width, height, depth, bagId } = req.body;
-
   const bag = await Bag.query().findById(bagId);
+
   const bagVolume = bag?.volume ?? 0;
 
   const cuboids = await Cuboid.query()
@@ -102,7 +102,12 @@ export const remove = async (
 ): Promise<Response> => {
   const { id } = req.params;
 
+  const cuboid = await Cuboid.query().findById(id);
+  if (!cuboid) {
+    return res.status(HttpStatus.NOT_FOUND).send();
+  }
+
   await Cuboid.query().delete().where({ id });
 
-  return res.status(HttpStatus.OK).send();
+  return res.status(HttpStatus.NO_CONTENT).send();
 };
